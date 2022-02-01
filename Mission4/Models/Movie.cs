@@ -9,9 +9,6 @@ namespace Mission4.Models
     public class Movie
     {
         [Required]
-        public string Category { get; set; }
-
-        [Required]
         [Key]
         public string Title { get; set; }
 
@@ -29,5 +26,8 @@ namespace Mission4.Models
 
         [MaxLength(25)]
         public string Notes { get; set; }
+
+        public int CategoryId { get; set; }
+        public Category Category { get; set; }
     }
 }

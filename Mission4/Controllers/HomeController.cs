@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Mission4.Models;
 using System;
@@ -28,15 +29,25 @@ namespace Mission4.Controllers
         [HttpGet]
         public IActionResult Movie()
         {
+            ViewBag.Categories = _mc.categories.ToList();
             return View();
         }
 
         [HttpPost]
         public IActionResult Movie(Movie newMovie)
         {
-            _mc.Add(newMovie);
-            _mc.SaveChanges();
-            return View();
+            if (ModelState.IsValid)
+            {
+                _mc.Add(newMovie);
+                _mc.SaveChanges();
+                ViewBag.Categories = _mc.categories.ToList();
+                return RedirectToAction("MovieList");
+            }
+            else
+            {
+                ViewBag.Categories = _mc.categories.ToList();
+                return View(newMovie);
+            }
         }
 
         public IActionResult Podcasts()
@@ -44,10 +55,37 @@ namespace Mission4.Controllers
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        [HttpGet]
+        public IActionResult MovieList()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var allMovies = _mc.movies.Include(x => x.Category).ToList();
+            return View(allMovies);
         }
+
+        [HttpGet]
+        public IActionResult EditMovie(string id)
+        {
+            Movie movieToEdit = _mc.movies.Single(x => x.Title == id);
+            ViewBag.Categories = _mc.categories.ToList();
+            return View("Movie", movieToEdit);
+        }
+
+        [HttpPost]
+        public IActionResult EditMovie(Movie movie)
+        {
+            _mc.Update(movie);
+            _mc.SaveChanges();
+            return RedirectToAction("MovieList");
+        }
+
+        [HttpGet]
+        public IActionResult DeleteMovie(string id)
+        {
+            Movie toDelete = _mc.movies.Single(x => x.Title == id);
+            _mc.movies.Remove(toDelete);
+            _mc.SaveChanges();
+            return RedirectToAction("MovieList");
+        }
+
     }
 }

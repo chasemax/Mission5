@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Mission4.Models;
 
-namespace Mission4.Migrations
+namespace Mission5.Migrations
 {
     [DbContext(typeof(MovieContext))]
     partial class MovieContextModelSnapshot : ModelSnapshot
@@ -15,14 +15,49 @@ namespace Mission4.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.22");
 
+            modelBuilder.Entity("Mission4.Models.Category", b =>
+                {
+                    b.Property<int>("CategoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CategoryName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("CategoryId");
+
+                    b.ToTable("categories");
+
+                    b.HasData(
+                        new
+                        {
+                            CategoryId = 1,
+                            CategoryName = "Action"
+                        },
+                        new
+                        {
+                            CategoryId = 2,
+                            CategoryName = "SciFi"
+                        },
+                        new
+                        {
+                            CategoryId = 3,
+                            CategoryName = "Romance"
+                        },
+                        new
+                        {
+                            CategoryId = 4,
+                            CategoryName = "Comedy"
+                        });
+                });
+
             modelBuilder.Entity("Mission4.Models.Movie", b =>
                 {
                     b.Property<string>("Title")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Director")
                         .IsRequired()
@@ -47,13 +82,15 @@ namespace Mission4.Migrations
 
                     b.HasKey("Title");
 
-                    b.ToTable("responses");
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("movies");
 
                     b.HasData(
                         new
                         {
                             Title = "Inception",
-                            Category = "Action",
+                            CategoryId = 1,
                             Director = "Christopher Nolan",
                             Edited = false,
                             Rating = "PG-13",
@@ -62,7 +99,7 @@ namespace Mission4.Migrations
                         new
                         {
                             Title = "The Martian",
-                            Category = "SciFi",
+                            CategoryId = 2,
                             Director = "Ridley Scott",
                             Edited = false,
                             Rating = "PG-13",
@@ -71,12 +108,21 @@ namespace Mission4.Migrations
                         new
                         {
                             Title = "Batman Begins",
-                            Category = "Action",
+                            CategoryId = 1,
                             Director = "Christopher Nolan",
                             Edited = false,
                             Rating = "PG-13",
                             Year = 2005
                         });
+                });
+
+            modelBuilder.Entity("Mission4.Models.Movie", b =>
+                {
+                    b.HasOne("Mission4.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

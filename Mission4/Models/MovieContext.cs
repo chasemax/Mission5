@@ -13,14 +13,15 @@ namespace Mission4.Models
 
         }
 
-        public DbSet<Movie> responses { get; set; }
+        public DbSet<Movie> movies { get; set; }
+        public DbSet<Category> categories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder mb)
         {
             mb.Entity<Movie>().HasData(
                 new Movie
                 {
-                    Category = "Action",
+                    CategoryId = 1,
                     Title = "Inception",
                     Year = 2010,
                     Director = "Christopher Nolan",
@@ -29,7 +30,7 @@ namespace Mission4.Models
                 },
                 new Movie
                 {
-                    Category = "SciFi",
+                    CategoryId = 2,
                     Title = "The Martian",
                     Year = 2015,
                     Director = "Ridley Scott",
@@ -38,12 +39,35 @@ namespace Mission4.Models
                 },
                 new Movie
                 {
-                    Category = "Action",
+                    CategoryId = 1,
                     Title = "Batman Begins",
                     Year = 2005,
                     Director = "Christopher Nolan",
                     Rating = "PG-13",
                     Edited = false
+                }
+                );
+
+            mb.Entity<Category>().HasData(
+                new Category
+                {
+                    CategoryId = 1,
+                    CategoryName = "Action"
+                },
+                new Category
+                {
+                    CategoryId = 2,
+                    CategoryName = "SciFi"
+                },
+                new Category
+                {
+                    CategoryId = 3,
+                    CategoryName = "Romance"
+                },
+                new Category
+                {
+                    CategoryId = 4,
+                    CategoryName = "Comedy"
                 }
                 );
         }
